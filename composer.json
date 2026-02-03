@@ -1,0 +1,7 @@
+{
+    "name": "antigravity/ek-survey",
+    "description": "WordPress Survey Plugin with PDF generation",
+    "require": {
+        "tecnickcom/tcpdf": "^6.6"
+    }
+}

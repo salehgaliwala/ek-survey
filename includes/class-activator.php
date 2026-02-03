@@ -1,0 +1,162 @@
+<?php
+
+class Ek_Survey_Activator
+{
+
+    public static function activate()
+    {
+        self::create_tables();
+        self::seed_data();
+    }
+
+    private static function create_tables()
+    {
+        global $wpdb;
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql_surveys = "CREATE TABLE {$wpdb->prefix}ek_surveys (
+			id bigint(20) NOT NULL AUTO_INCREMENT,
+			title varchar(255) NOT NULL,
+			structure longtext NOT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			PRIMARY KEY  (id)
+		) $charset_collate;";
+
+        $sql_submissions = "CREATE TABLE {$wpdb->prefix}ek_submissions (
+			id bigint(20) NOT NULL AUTO_INCREMENT,
+			survey_id bigint(20) NOT NULL,
+			user_id bigint(20),
+			response_data longtext NOT NULL,
+			pdf_url varchar(255),
+			created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			PRIMARY KEY  (id)
+		) $charset_collate;";
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql_surveys);
+        dbDelta($sql_submissions);
+    }
+
+    private static function seed_data()
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'ek_surveys';
+
+        // Check if survey already exists
+        $existing = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+        if ($existing > 0) {
+            return;
+        }
+
+        $survey_structure = [
+            'title' => 'Monitoring Project Borehole',
+            'sections' => [
+                [
+                    'id' => 'section_1',
+                    'title' => 'Section 1: Survey purpose, consent and identification',
+                    'questions' => [
+                        ['id' => '1.1', 'label' => 'Survey purpose', 'type' => 'radio', 'options' => ['Monitoring Report (Year y)']],
+                        ['id' => '1.2', 'label' => 'Consent to participate', 'type' => 'radio', 'options' => ['Yes', 'No (end survey)']],
+                        ['id' => '1.3', 'label' => 'Enumerator name and ID', 'type' => 'text'],
+                        ['id' => '1.4', 'label' => 'Date of interview', 'type' => 'date'],
+                        ['id' => '1.5', 'label' => 'Region / District / Sub-county / Parish / Village', 'type' => 'text'],
+                        ['id' => '1.6', 'label' => 'Project borehole ID', 'type' => 'text'],
+                        ['id' => '1.7', 'label' => 'Premises type', 'type' => 'radio', 'options' => ['Household', 'School', 'Religious building', 'Community centre', 'Other (specify)']],
+                        ['id' => '1.8', 'label' => 'GPS coordinates', 'type' => 'geolocation', 'description' => 'Click to get current location'],
+                    ]
+                ],
+                [
+                    'id' => 'section_2',
+                    'title' => 'Section 2: Respondent and household information',
+                    'questions' => [
+                        ['id' => '2.1', 'label' => 'Respondent Name', 'type' => 'text'],
+                        ['id' => '2.2', 'label' => 'Phone (if available)', 'type' => 'text'],
+                        ['id' => '2.3', 'label' => 'Email (if available)', 'type' => 'email'],
+                        ['id' => '2.4', 'label' => 'Respondent role', 'type' => 'radio', 'options' => ['Head of household', 'Spouse/partner', 'Adult household member', 'Staff (school/clinic/community building)', 'Other (specify)']],
+                        ['id' => '2.5', 'label' => 'Respondent sex', 'type' => 'radio', 'options' => ['Female', 'Male', 'Prefer not to say']],
+                        ['id' => '2.6', 'label' => 'Respondent age group', 'type' => 'radio', 'options' => ['18–24', '25–34', '35–44', '45–54', '55+']],
+                        ['id' => '2.7', 'label' => 'Total number of people who normally live in this household/premises', 'type' => 'number'],
+                        ['id' => '2.8', 'label' => 'Number of females (optional)', 'type' => 'number'],
+                        ['id' => '2.9', 'label' => 'Number of males (optional)', 'type' => 'number'],
+                    ]
+                ],
+                [
+                    'id' => 'section_3',
+                    'title' => 'Section 3: Project borehole use and usage rate (Up,y)',
+                    'questions' => [
+                        ['id' => '3.1', 'label' => 'Do you use this project borehole as a source of drinking water?', 'type' => 'radio', 'options' => ['Yes, as main source', 'Yes, sometimes', 'No', 'Don’t know / Not sure']],
+                        ['id' => '3.2', 'label' => 'In the last 7 days, on how many days did you collect drinking water from this project borehole?', 'type' => 'radio', 'options' => ['0', '1–2', '3–4', '5–6', '7', 'Don’t know / Not sure']],
+                        ['id' => '3.3', 'label' => 'On a typical day when you use the project borehole, how much drinking water does your household collect from it?', 'type' => 'radio', 'options' => ['Less than 20 litres', '20–50 litres', 'More than 50 litres', 'Not applicable (do not use)', 'Don’t know / Not sure']],
+                    ]
+                ],
+                [
+                    'id' => 'section_4',
+                    'title' => 'Section 4: Drinking water quantity and time (monitoring values)',
+                    'questions' => [
+                        ['id' => '4.1', 'label' => 'On a typical day now, how much drinking water does your household collect in total (all sources combined)?', 'type' => 'radio', 'options' => ['Less than 20 litres', '20–50 litres', 'More than 50 litres', 'Don’t know / Not sure']],
+                        ['id' => '4.2', 'label' => 'Who mainly collects drinking water for this household/premises now?', 'type' => 'radio', 'options' => ['Adult woman', 'Adult man', 'Girl under 18', 'Boy under 18', 'Shared equally', 'Paid water carrier', 'Other (specify)', 'Don’t know / Not sure']],
+                        ['id' => '4.3', 'label' => 'On a typical day now, how much total time does your household spend collecting drinking water from all sources?', 'type' => 'radio', 'options' => ['Less than 15 minutes', '15–30 minutes', '31–60 minutes', '61–90 minutes', 'More than 90 minutes', 'Don’t know / Not sure']],
+                        ['id' => '4.4', 'label' => 'On a typical day now, how much time does your household spend collecting drinking water from the project borehole only?', 'type' => 'radio', 'options' => ['Less than 15 minutes', '15–30 minutes', '31–60 minutes', '61–90 minutes', 'More than 90 minutes', 'Not applicable', 'Don’t know / Not sure']],
+                        ['id' => '4.5', 'label' => 'On average, how much drinking water does each person drink per day?', 'type' => 'radio', 'options' => ['Less than 1 litre', '1–2 litres', '2–3 litres', '3–4 litres', 'More than 4 litres', 'Don’t know / Not sure']],
+                    ]
+                ],
+                [
+                    'id' => 'section_5',
+                    'title' => 'Section 5: Continued boiling and treatment in year y',
+                    'questions' => [
+                        ['id' => '5.1', 'label' => 'Do you treat drinking water from the project borehole before drinking it?', 'type' => 'radio', 'options' => ['Yes, always', 'Yes, sometimes', 'No, never', 'Not applicable', 'Don’t know / Not sure']],
+                        ['id' => '5.2', 'label' => 'Do you boil drinking water that comes from the project borehole?', 'type' => 'radio', 'options' => ['Always', 'Often', 'Sometimes', 'Rarely', 'Never', 'Not applicable', 'Don’t know / Not sure']],
+                        ['id' => '5.3', 'label' => 'If you still boil project borehole water, why?', 'type' => 'checkbox', 'options' => ['Habit', 'Concern about safety', 'Taste preference', 'For children/elderly', 'Advice from others', 'Other (specify)', 'Not applicable']],
+                        ['id' => '5.4', 'label' => 'If you boil drinking water, what stove/device do you mainly use now?', 'type' => 'radio', 'options' => ['Three stone fire (open fire)', 'Improved cookstove', 'Charcoal stove', 'LPG gas stove', 'Electric kettle/stove', 'Other (specify)', 'Not applicable', 'Don’t know / Not sure']],
+                        ['id' => '5.5', 'label' => 'If you boil drinking water, what fuel do you mainly use now?', 'type' => 'radio', 'options' => ['Firewood', 'Charcoal', 'LPG', 'Electricity', 'Agricultural residues', 'Other (specify)', 'Not applicable', 'Don’t know / Not sure']],
+                    ]
+                ],
+                [
+                    'id' => 'section_6',
+                    'title' => 'Section 6: Service experience and SDG and optional SDWS claim-support modules',
+                    'questions' => [
+                        ['id' => '6.1', 'label' => 'Are you satisfied with the water quality from the project borehole?', 'type' => 'radio', 'options' => ['Yes', 'No', 'Sometimes', 'Not applicable', 'Don’t know / Not sure']],
+                        ['id' => '6.2', 'label' => 'In the last 30 days, was the project borehole ever not working when you needed it?', 'type' => 'radio', 'options' => ['No', 'Yes', 'Don’t know / Not sure', 'Not applicable']],
+                        ['id' => '6.3', 'label' => 'In the last 6 months, have you received any hygiene or safe water education or messaging?', 'type' => 'radio', 'options' => ['Yes', 'No', 'Don’t know / Not sure']],
+                        ['id' => '6.4', 'label' => 'If yes, how did you receive it?', 'type' => 'checkbox', 'options' => ['Community meeting / training session', 'Household visit', 'School session', 'Poster / leaflet', 'Radio / public announcement', 'SMS / phone message', 'Other (specify)', 'Don’t know / Not sure']],
+                        ['id' => '6.5', 'label' => 'If yes, what topics were covered?', 'type' => 'checkbox', 'options' => ['Handwashing with soap', 'Safe water storage', 'Treating drinking water', 'Keeping the water point clean', 'Latrine use', 'Other (specify)', 'Don’t know / Not sure']],
+                        ['id' => '6.6', 'label' => 'In the past 2 weeks, has any household member had diarrhoea?', 'type' => 'radio', 'options' => ['Yes', 'No', 'Prefer not to say', 'Don’t know / Not sure']],
+                        ['id' => '6.7', 'label' => 'In the past 2 weeks, has any household member had cough or breathing problems that you believe are linked to smoke from cooking or boiling water?', 'type' => 'radio', 'options' => ['No', 'Yes, mild', 'Yes, severe', 'Prefer not to say', 'Don’t know / Not sure']],
+                        ['id' => '6.8', 'label' => 'In the past 12 months, has anyone in the household had a burn/accident related to boiling water or cooking?', 'type' => 'radio', 'options' => ['Yes', 'No', 'Prefer not to say', 'Don’t know / Not sure']],
+                        ['id' => '6.9', 'label' => 'Type of toilet facility usually used', 'type' => 'radio', 'options' => ['Flush/pour flush to sewer', 'Flush/pour flush to septic tank', 'Pit latrine with slab', 'Pit latrine without slab', 'No facility (bush/field)', 'Don’t know / Not sure']],
+                        ['id' => '6.10', 'label' => 'Where do members of the household most often wash hands?', 'type' => 'radio', 'options' => ['Fixed facility (sink/tap)', 'Mobile object (bucket/jug)', 'No handwashing facility', 'Don’t know / Not sure']],
+                        ['id' => '6.11', 'label' => 'Is water available at the handwashing place?', 'type' => 'radio', 'options' => ['Yes', 'No', 'No handwashing facility', 'Don’t know / Not sure']],
+                        ['id' => '6.12', 'label' => 'Is soap available at the handwashing place?', 'type' => 'radio', 'options' => ['Yes', 'No', 'Don’t know / Not sure']],
+                    ]
+                ],
+                [
+                    'id' => 'section_7',
+                    'title' => 'Section 7: Photos',
+                    'questions' => [
+                        ['id' => '7.1', 'label' => 'Respondent photo', 'type' => 'file'],
+                        ['id' => '7.2', 'label' => 'Household photo (not mandatory)', 'type' => 'file'],
+                        ['id' => '7.3', 'label' => 'Water source photo (not mandatory)', 'type' => 'file'],
+                    ]
+                ],
+                [
+                    'id' => 'section_8',
+                    'title' => 'Section 8: Sign-off',
+                    'questions' => [
+                        ['id' => '8.1', 'label' => 'Respondent signature or thumbprint', 'type' => 'signature', 'description' => 'Sign above using touch or mouse'],
+                        ['id' => '8.2', 'label' => 'Enumerator signature', 'type' => 'signature', 'description' => 'Sign above using touch or mouse'],
+                    ]
+                ]
+            ]
+        ];
+
+        $wpdb->insert(
+            $table_name,
+            array(
+                'title' => 'Project Borehole Monitoring',
+                'structure' => json_encode($survey_structure),
+                'created_at' => current_time('mysql')
+            )
+        );
+    }
+}

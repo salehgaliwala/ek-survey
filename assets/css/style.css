@@ -1,0 +1,287 @@
+/* Main Container */
+.ek-survey-container {
+    max-width: 800px;
+    margin: 200px auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #334155;
+}
+
+.ek-survey-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+/* Progress Bar */
+.ek-survey-progress {
+    margin-bottom: 40px;
+    background: #f1f5f9;
+    border-radius: 20px;
+    height: 10px;
+    position: relative;
+    overflow: visible;
+}
+
+.ek-survey-progress-bar {
+    background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.ek-survey-progress-text {
+    position: absolute;
+    right: 0;
+    top: -25px;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Sections */
+.ek-survey-section-title {
+    font-size: 18px;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+    color: #1e293b;
+}
+
+/* Form Fields */
+.ek-form-group {
+    margin-bottom: 25px;
+}
+
+.ek-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #334155;
+    font-size: 15px;
+}
+
+.ek-input,
+.ek-input-file {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.ek-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.description {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+/* Radio & Checkbox */
+.ek-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ek-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ek-option:hover {
+    background: #f8fafc;
+}
+
+/* Buttons */
+.ek-survey-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+button.ek-btn-prev,
+button.ek-btn-next,
+button.ek-btn-submit,
+.ek-btn-download,
+.ek-btn-geo {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+button.ek-btn-prev {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+button.ek-btn-prev:hover {
+    background: #cbd5e1;
+}
+
+button.ek-btn-next,
+button.ek-btn-submit,
+.ek-btn-download {
+    background: #3b82f6;
+    color: #ffffff;
+}
+
+button.ek-btn-next:hover,
+button.ek-btn-submit:hover,
+.ek-btn-download:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.ek-btn-geo {
+    background: #10b981;
+    color: white;
+    margin-top: 10px;
+    font-size: 13px;
+    padding: 8px 16px;
+}
+
+.ek-geo-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.ek-success-message {
+    text-align: center;
+    padding: 40px;
+}
+
+.ek-btn-download {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 20px;
+}
+/* Camera UI */
+.ek-file-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.ek-camera-preview {
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    display: none; /* Hidden until photo taken */
+    margin-top: 10px;
+}
+
+.ek-btn-camera {
+    background: #475569;
+    color: white;
+    font-size: 13px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ek-btn-camera:hover {
+    background: #334155;
+}
+
+.ek-camera-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ek-camera-content {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.ek-video-feed {
+    width: 100%;
+    border-radius: 8px;
+    background: #000;
+}
+
+.ek-camera-controls {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+.ek-btn-snap {
+    background: #ef4444; /* Red button like a real cam */
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 4px solid white;
+    font-size: 0; /* hide text */
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.ek-btn-snap:active {
+    transform: scale(0.95);
+}
+
+.ek-btn-close-camera {
+    background: transparent;
+    border: 1px solid #94a3b8;
+    color: #94a3b8;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.ek-btn-close-camera:hover {
+    border-color: #cbd5e1;
+    color: #cbd5e1;
+}
+
