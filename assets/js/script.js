@@ -16,10 +16,25 @@ jQuery(document).ready(function ($) {
         $sections.removeClass('active').hide();
         $($sections[index]).addClass('active').fadeIn();
         updateProgress();
+        updateSignatureNames(); // Update names when section is shown
         // Scroll to top of form
         $('html, body').animate({
             scrollTop: $('.ek-survey-container').offset().top - 100
         }, 500);
+    }
+
+    function updateSignatureNames() {
+        // Enumerator Name (1.3) -> Signature 8.2
+        var enumName = $('input[name="responses[1.3]"]').val();
+        if (enumName) {
+            $('#ek-sig-name-display-8\\.2').text('Name: ' + enumName);
+        }
+
+        // Respondent Name (2.1) -> Signature 8.1
+        var respName = $('input[name="responses[2.1]"]').val();
+        if (respName) {
+            $('#ek-sig-name-display-8\\.1').text('Name: ' + respName);
+        }
     }
 
     // Initialize
@@ -43,11 +58,63 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    // Simple validation
+    // Validation Logic
     function validateSection(index) {
         var $currentSection = $($sections[index]);
         var valid = true;
-        // Logic can be added here to check required fields
+
+        $currentSection.find('.ek-form-group.ek-required').each(function () {
+            var $group = $(this);
+            var isValid = false;
+            var errorMsg = 'This field is required';
+
+            // Remove existing error logic
+            $group.removeClass('ek-has-error');
+            $group.find('.ek-error-message').remove();
+
+            // Check input types
+            if ($group.find('input[type="radio"]').length > 0) {
+                if ($group.find('input[type="radio"]:checked').length > 0) {
+                    isValid = true;
+                }
+            } else if ($group.find('input[type="checkbox"]').length > 0) {
+                if ($group.find('input[type="checkbox"]:checked').length > 0) {
+                    isValid = true;
+                }
+            } else if ($group.find('input[type="file"]').length > 0) {
+                // Check if file is selected (for new uploads)
+                if ($group.find('input[type="file"]').val()) {
+                    isValid = true;
+                }
+            } else if ($group.find('input.ek-signature-input').length > 0) {
+                if ($group.find('input.ek-signature-input').val()) {
+                    isValid = true;
+                }
+            } else {
+                // Text, Email, Number, Date, etc.
+                var val = $group.find('input').val();
+                if (val && val.trim() !== '') {
+                    isValid = true;
+                }
+            }
+
+            if (!isValid) {
+                valid = false;
+                $group.addClass('ek-has-error');
+                $group.append('<div class="ek-error-message" style="color:red; font-size:12px; margin-top:5px;">' + errorMsg + '</div>');
+            }
+        });
+
+        if (!valid) {
+            // Optional: Scroll to first error
+            var $firstError = $currentSection.find('.ek-has-error').first();
+            if ($firstError.length > 0) {
+                $('html, body').animate({
+                    scrollTop: $firstError.offset().top - 100
+                }, 500);
+            }
+        }
+
         return valid;
     }
 
@@ -194,17 +261,31 @@ jQuery(document).ready(function ($) {
         $(canvas).on('mouseup touchend mouseout', stopDrawing);
     });
 
-    $('.ek-btn-clear-sig').on('click', function () {
-        var id = $(this).data('id');
-        var canvas = $('#sig-pad-' + id + ' canvas')[0];
-        var ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        $('#field_' + id).val('');
+    $('.ek-btn-clear-sig').on('click', function (e) {
+        e.preventDefault();
+        var id = $(this).attr('data-id'); // Use attr to ensure string
+
+        var canvas = document.getElementById('canvas-' + id);
+        if (canvas) {
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath(); // Reset path to prevent old strokes from reappearing
+        }
+
+        var input = document.getElementById('field_' + id);
+        if (input) {
+            $(input).val('');
+        }
     });
 
     // Form Submission
     $form.on('submit', function (e) {
         e.preventDefault();
+
+        // Validate current step (last step)
+        if (!validateSection(currentStep)) {
+            return;
+        }
 
         var formData = new FormData(this);
         formData.append('nonce', ekSurveyAjax.nonce);
@@ -222,12 +303,14 @@ jQuery(document).ready(function ($) {
                 if (response.success) {
                     $form.html('<div class="ek-success-message"><h3>Thank you!</h3><p>Your survey has been submitted successfully.</p><p><a href="' + response.data.pdf_url + '" class="ek-btn-download" target="_blank">Download PDF Report</a></p></div>');
                 } else {
+                    console.error('Submission failed:', response);
                     alert('Error: ' + (response.data || 'Unknown error occurred.'));
                     $submitBtn.prop('disabled', false).text('Submit Survey');
                 }
             },
-            error: function () {
-                alert('Server error occurred. Please try again.');
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error:', textStatus, errorThrown, jqXHR.responseText);
+                alert('Server error occurred. Please try again. details logged to console.');
                 $submitBtn.prop('disabled', false).text('Submit Survey');
             }
         });

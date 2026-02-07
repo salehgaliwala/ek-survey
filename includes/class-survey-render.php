@@ -83,8 +83,12 @@ class Ek_Survey_Render
         $type = $question['type'];
         $desc = isset($question['description']) ? '<p class="description">' . esc_html($question['description']) . '</p>' : '';
 
-        $html = '<div class="ek-form-group field-type-' . esc_attr($type) . '">';
-        $html .= '<label class="ek-label" for="field_' . $id . '">' . $question['id'] . ' ' . $label . '</label>';
+        $is_optional = stripos($label, 'optional') !== false || stripos($label, 'not mandatory') !== false;
+        $required_class = $is_optional ? '' : ' ek-required';
+
+        $html = '<div class="ek-form-group field-type-' . esc_attr($type) . $required_class . '">';
+        $req_span = $is_optional ? '' : ' <span class="ek-req-star" style="color:red">*</span>';
+        $html .= '<label class="ek-label" for="field_' . $id . '">' . $question['id'] . ' ' . $label . $req_span . '</label>';
 
         switch ($type) {
             case 'text':
@@ -148,6 +152,7 @@ class Ek_Survey_Render
                 $html .= '<div class="ek-signature-controls">';
                 $html .= '<button type="button" class="ek-btn-clear-sig small" data-id="' . $id . '">Clear</button>';
                 $html .= '</div>';
+                $html .= '<div class="ek-signature-name-display" id="ek-sig-name-display-' . $id . '" style="margin-top: 10px; font-weight: bold; font-family: sans-serif;"></div>';
                 $html .= '</div>';
                 break;
 

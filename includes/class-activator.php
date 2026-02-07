@@ -53,6 +53,16 @@ class Ek_Survey_Activator
             'title' => 'Monitoring Project Borehole',
             'sections' => [
                 [
+                    'id' => 'section_gps_photos',
+                    'title' => 'GPS and Photos',
+                    'questions' => [
+                        ['id' => '1.8', 'label' => 'GPS coordinates', 'type' => 'geolocation', 'description' => 'Click to get current location'],
+                        ['id' => '7.1', 'label' => 'Respondent photo', 'type' => 'file'],
+                        ['id' => '7.2', 'label' => 'Household photo (not mandatory)', 'type' => 'file'],
+                        ['id' => '7.3', 'label' => 'Water source photo (not mandatory)', 'type' => 'file'],
+                    ]
+                ],
+                [
                     'id' => 'section_1',
                     'title' => 'Section 1: Survey purpose, consent and identification',
                     'questions' => [
@@ -63,7 +73,6 @@ class Ek_Survey_Activator
                         ['id' => '1.5', 'label' => 'Region / District / Sub-county / Parish / Village', 'type' => 'text'],
                         ['id' => '1.6', 'label' => 'Project borehole ID', 'type' => 'text'],
                         ['id' => '1.7', 'label' => 'Premises type', 'type' => 'radio', 'options' => ['Household', 'School', 'Religious building', 'Community centre', 'Other (specify)']],
-                        ['id' => '1.8', 'label' => 'GPS coordinates', 'type' => 'geolocation', 'description' => 'Click to get current location'],
                     ]
                 ],
                 [
@@ -128,15 +137,6 @@ class Ek_Survey_Activator
                         ['id' => '6.10', 'label' => 'Where do members of the household most often wash hands?', 'type' => 'radio', 'options' => ['Fixed facility (sink/tap)', 'Mobile object (bucket/jug)', 'No handwashing facility', 'Don’t know / Not sure']],
                         ['id' => '6.11', 'label' => 'Is water available at the handwashing place?', 'type' => 'radio', 'options' => ['Yes', 'No', 'No handwashing facility', 'Don’t know / Not sure']],
                         ['id' => '6.12', 'label' => 'Is soap available at the handwashing place?', 'type' => 'radio', 'options' => ['Yes', 'No', 'Don’t know / Not sure']],
-                    ]
-                ],
-                [
-                    'id' => 'section_7',
-                    'title' => 'Section 7: Photos',
-                    'questions' => [
-                        ['id' => '7.1', 'label' => 'Respondent photo', 'type' => 'file'],
-                        ['id' => '7.2', 'label' => 'Household photo (not mandatory)', 'type' => 'file'],
-                        ['id' => '7.3', 'label' => 'Water source photo (not mandatory)', 'type' => 'file'],
                     ]
                 ],
                 [

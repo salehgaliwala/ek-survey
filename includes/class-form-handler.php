@@ -6,6 +6,7 @@ class Ek_Survey_Form_Handler
     public static function handle_submission()
     {
         check_ajax_referer('ek_survey_nonce', 'nonce');
+        error_log('EK Survey: Submission started.');
 
         $survey_id = intval($_POST['survey_id']);
         $responses = isset($_POST['responses']) ? $_POST['responses'] : array();
@@ -56,7 +57,11 @@ class Ek_Survey_Form_Handler
 
                         // Add to responses so it's saved in JSON
                         $responses[$q_id] = $target_url;
+                    } else {
+                        error_log('EK Survey: Failed to move uploaded file: ' . $file['name']);
                     }
+                } else {
+                    error_log('EK Survey: File upload error code: ' . $file['error']);
                 }
             }
         }
@@ -71,10 +76,14 @@ class Ek_Survey_Form_Handler
         }
 
         foreach ($responses as $q_id => $val) {
+            if (!is_string($val)) {
+                continue;
+            }
+
             $is_png = strpos($val, 'data:image/png;base64,') === 0;
             $is_jpg = strpos($val, 'data:image/jpeg;base64,') === 0;
 
-            if (is_string($val) && ($is_png || $is_jpg)) {
+            if ($is_png || $is_jpg) {
                 $ext = $is_png ? 'png' : 'jpg';
                 $prefix = $is_png ? 'data:image/png;base64,' : 'data:image/jpeg;base64,';
 
@@ -93,6 +102,8 @@ class Ek_Survey_Form_Handler
                         'url' => $target_url,
                         'name' => 'Captured Image'
                     ];
+                } else {
+                    error_log('EK Survey: Failed to save signature image.');
                 }
             }
         }
@@ -108,7 +119,11 @@ class Ek_Survey_Form_Handler
             'created_at' => current_time('mysql')
         );
 
-        $wpdb->insert($table_name, $data);
+        $result = $wpdb->insert($table_name, $data);
+        if ($result === false) {
+            error_log('EK Survey: DB Insert Error: ' . $wpdb->last_error);
+            wp_send_json_error('Database error occurred.');
+        }
         $submission_id = $wpdb->insert_id;
 
         // Generate PDF

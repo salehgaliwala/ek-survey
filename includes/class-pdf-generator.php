@@ -1,6 +1,10 @@
 <?php
 
-use TCPDF;
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 
 class Ek_Survey_Pdf_Generator
 {
@@ -14,108 +18,271 @@ class Ek_Survey_Pdf_Generator
         $survey = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $survey_id));
         $structure = json_decode($survey->structure, true);
 
-        // Initialize TCPDF
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-        // Set document information
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Ek Survey Plugin');
-        $pdf->SetTitle('Survey Submission #' . $submission_id);
-
-        // Remove default header/footer
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        // Add a page
-        $pdf->AddPage();
-
-        // Title
-        $pdf->SetFont('helvetica', 'B', 20);
-        $pdf->Cell(0, 15, $structure['title'], 0, 1, 'C');
-
-        $pdf->SetFont('helvetica', '', 10);
-        $pdf->Cell(0, 10, 'Submission #' . $submission_id . ' - Date: ' . current_time('mysql'), 0, 1, 'C');
-        $pdf->Ln(5);
-
-        // Iterate Sections
-        foreach ($structure['sections'] as $section) {
-            // Section Header
-            $pdf->SetFont('helvetica', 'B', 14);
-            $pdf->SetFillColor(240, 240, 240);
-            $pdf->Cell(0, 10, $section['title'], 0, 1, 'L', 1);
-            $pdf->Ln(2);
-
-            $pdf->SetFont('helvetica', '', 11);
-
-            foreach ($section['questions'] as $question) {
-                $q_id = $question['id'];
-                $label = $question['label'];
-                $answer = isset($responses[$q_id]) ? $responses[$q_id] : '';
-
-                // Format Answer
-                if (is_array($answer)) {
-                    $answer_text = implode(', ', $answer);
-                } else {
-                    $answer_text = $answer;
-                }
-
-                // Check if this question has a file upload
-                // The key in $responses and $question['id'] match usually
-                // But we also passed specific $files array for paths
-                $is_image = false;
-                $image_path = '';
-
-                // Fix for ID matching if needed (files are stored with q_id key)
-                // Check if files array contains this ID
-                // Note: in form handler we stripped 'files_' prefix
-                if (isset($files[$q_id])) {
-                    $is_image = true;
-                    $image_path = $files[$q_id]['path'];
-                }
-
-                // Check if answer points to an image URL (fallback)
-                if (!$is_image && (strpos($answer_text, '.jpg') !== false || strpos($answer_text, '.png') !== false)) {
-                    // It's likely an image URL, but we need local path for TCPDF usually
-                    // For simplicity rely on $files passed from handler
-                }
-
-                // Print Question
-                $pdf->SetFont('helvetica', 'B', 11);
-                $pdf->MultiCell(0, 7, $q_id . ' ' . $label, 0, 'L');
-
-                // Print Answer
-                $pdf->SetFont('helvetica', '', 11);
-                if ($is_image && file_exists($image_path)) {
-                    $pdf->Ln(2);
-                    // Calculates height automatically while width is 50.
-                    // We need to account for the height of the image to move cursor down.
-                    // TCPDF Image() usually moves cursor to bottom if align is not set, but let's be safe.
-                    // We can use GetY() or just hardcode a safe spacing if images are standard.
-                    // Let's assume max height around 50 for signature/photo thumb.
-                    $pdf->Image($image_path, '', '', 50, 0, '', '', 'T', false, 300, '', false, false, 0, false, false, false);
-                    $pdf->Ln(45); // Move down enough for the image height
-                } else {
-                    $pdf->MultiCell(0, 7, 'Answer: ' . ($answer_text ?: 'N/A'), 0, 'L');
-                }
-
-                $pdf->Ln(3);
+        // Start HTML Buffering
+        ob_start();
+        ?>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 10px;
             }
-            $pdf->Ln(5);
-        }
 
-        // Save PDF
+            th,
+            td {
+                padding: 5px;
+                vertical-align: top;
+            }
+
+            .section-title {
+                background-color: #f0f0f0;
+                font-size: 14pt;
+                font-weight: bold;
+                padding: 5px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .question-label {
+                font-weight: bold;
+                font-size: 11pt;
+                margin-bottom: 2px;
+            }
+
+            .answer-text {
+                font-size: 11pt;
+                margin-bottom: 5px;
+            }
+
+            .photo-grid {
+                table-layout: fixed;
+                margin-left: -100px;
+                width: 100%;
+            }
+
+            .photo-grid td {
+                width: 33%;
+                text-align: center;
+                vertical-align: top;
+                border: none;
+                padding: 5px;
+                /* Reduced padding */
+            }
+
+            .signature-grid {
+                table-layout: fixed;
+                margin-left: -150px;
+                width: 100%;
+            }
+
+            .signature-grid td {
+                width: 50%;
+                text-align: center;
+                vertical-align: top;
+                border: none;
+                padding: 5px;
+            }
+
+            .photo-label {
+                font-weight: bold;
+                font-size: 10pt;
+                margin-top: 5px;
+            }
+
+            .photo-sub-label {
+                font-style: italic;
+                font-size: 9pt;
+            }
+
+            .img-container {
+                /* Fixed height to ensure alignment */
+                /* height: 200px; Remove fixed height to let it shrink to content if user wants it "just below" */
+                /* But for alignment row-wise, min-height is better, or just rely on the cell vertical-align top */
+                text-align: center;
+                border: 1px solid #ddd;
+                padding: 5px;
+                margin-top: 2px;
+                /* Minimal margin */
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+        </style>
+
+        <page backtop="7mm" backbottom="7mm" backleft="10mm" backright="10mm">
+            <h1 style="text-align: center;"><?php echo esc_html($structure['title']); ?></h1>
+
+            <?php foreach ($structure['sections'] as $section): ?>
+                <div class="section-title"><?php echo esc_html($section['title']); ?></div>
+
+                <?php if ($section['id'] === 'section_gps_photos'): ?>
+                    <?php
+                    $photos = [];
+                    $gps_question = null;
+
+                    foreach ($section['questions'] as $q) {
+                        if (strpos($q['id'], '7.') === 0) {
+                            $photos[] = $q;
+                        } else {
+                            $gps_question = $q;
+                        }
+                    }
+
+                    // Render GPS
+                    if ($gps_question) {
+                        $q_id = $gps_question['id'];
+                        $label = $gps_question['label'];
+                        $answer = isset($responses[$q_id]) ? $responses[$q_id] : '';
+                        ?>
+                        <div class="question-wrapper">
+                            <div class="question-label"><?php echo esc_html($q_id . ' ' . $label); ?></div>
+                            <div class="answer-text">Answer: <?php echo esc_html($answer ?: 'N/A'); ?></div>
+                        </div>
+                    <?php } ?>
+
+                    <!-- Photos Grid -->
+                    <?php if (!empty($photos)): ?>
+                        <table class="photo-grid" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <?php foreach ($photos as $q):
+                                    $q_id = $q['id'];
+                                    $label = $q['label'];
+                                    $sub_label = '';
+                                    if (stripos($label, '(not mandatory)') !== false) {
+                                        $label = str_ireplace('(not mandatory)', '', $label);
+                                        $sub_label = '(not mandatory)';
+                                    }
+
+                                    $image_path = '';
+                                    if (isset($files[$q_id])) {
+                                        $image_path = $files[$q_id]['path'];
+                                    }
+                                    ?>
+                                    <td style="width: 33%; vertical-align: top; padding: 5px;">
+                                        <div class="question-label" style="font-weight: bold; margin-bottom: 2px;">
+                                            <?php echo esc_html($q_id . ' ' . trim($label)); ?>
+                                        </div>
+                                        <?php if ($sub_label): ?>
+                                            <div class="photo-sub-label" style="font-style: italic; font-size: 9pt; margin-bottom: 2px;">
+                                                <?php echo esc_html($sub_label); ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <!-- Removed <br> here -->
+
+                                        <div class="img-container">
+                                            <?php if (file_exists($image_path)): ?>
+                                                <img src="<?php echo esc_attr($image_path); ?>"
+                                                    style="width: 95%; height: auto; max-height: 200px;">
+                                            <?php else: ?>
+                                                <div style="height: 100px; line-height: 100px; background: #eee;">[No Image]</div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                <?php endforeach; ?>
+                            </tr>
+                        </table>
+                    <?php endif; ?>
+
+                <?php elseif ($section['id'] === 'section_8'): ?>
+                    <!-- Signatures -->
+                    <table class="signature-grid" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <?php foreach ($section['questions'] as $q):
+                                $q_id = $q['id'];
+                                $image_path = '';
+                                if (isset($files[$q_id])) {
+                                    $image_path = $files[$q_id]['path'];
+                                }
+
+                                $name_val = '';
+                                if ($q_id === '8.1' && isset($responses['2.1'])) {
+                                    $name_val = $responses['2.1'];
+                                } elseif ($q_id === '8.2' && isset($responses['1.3'])) {
+                                    $name_val = $responses['1.3'];
+                                }
+                                ?>
+                                <td style="width: 50%; vertical-align: top; padding: 5px;">
+                                    <div class="question-label"><?php echo esc_html($q['label']); ?></div>
+                                    <!-- Removed <br> here -->
+                                    <div class="img-container" style="min-height: 80px;">
+                                        <?php if (file_exists($image_path)): ?>
+                                            <img src="<?php echo esc_attr($image_path); ?>" style="max-height: 100px; max-width: 100%;">
+                                        <?php else: ?>
+                                            <div style="padding-top: 30px;">[No Signature]</div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="answer-text" style="margin-top: 5px;"><strong><?php echo esc_html($name_val); ?></strong>
+                                    </div>
+                                </td>
+                            <?php endforeach; ?>
+                        </tr>
+                    </table>
+
+                <?php else: ?>
+                    <!-- Standard Questions -->
+                    <?php foreach ($section['questions'] as $q):
+                        $q_id = $q['id'];
+                        $label = $q['label'];
+                        $answer = isset($responses[$q_id]) ? $responses[$q_id] : '';
+                        if (is_array($answer))
+                            $answer = implode(', ', $answer);
+
+                        $image_path = '';
+                        if (isset($files[$q_id])) {
+                            $image_path = $files[$q_id]['path'];
+                        }
+                        ?>
+                        <div class="question-wrapper">
+                            <div class="question-label"><?php echo esc_html($q_id . ' ' . $label); ?></div>
+                            <?php if ($image_path && file_exists($image_path)): ?>
+                                <img src="<?php echo esc_attr($image_path); ?>" style="max-width: 200px; margin-top: 2px;">
+                            <?php else: ?>
+                                <div class="answer-text">Answer: <?php echo esc_html($answer ?: 'N/A'); ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <br>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
+            <?php endforeach; ?>
+        </page>
+        <?php
+        $content = ob_get_clean();
+
+        // Debug HTML
         $upload_dir = wp_upload_dir();
-        $base_dir = $upload_dir['basedir'] . '/ek-surveys/' . date('Y/m');
-        $base_url = $upload_dir['baseurl'] . '/ek-surveys/' . date('Y/m');
+        $debug_path = $upload_dir['basedir'] . '/ek-surveys/' . date('Y/m') . '/debug_' . $submission_id . '.html';
+        file_put_contents($debug_path, $content);
 
-        if (!file_exists($base_dir)) {
-            wp_mkdir_p($base_dir);
+        // Generate PDF
+        try {
+            $html2pdf = new Html2Pdf('P', 'A4', 'en');
+            $html2pdf->pdf->SetDisplayMode('fullpage');
+            $html2pdf->writeHTML($content);
+
+            // Output
+            $upload_dir = wp_upload_dir();
+            $base_dir = $upload_dir['basedir'] . '/ek-surveys/' . date('Y/m');
+            $base_url = $upload_dir['baseurl'] . '/ek-surveys/' . date('Y/m');
+
+            if (!file_exists($base_dir)) {
+                wp_mkdir_p($base_dir);
+            }
+
+            $filename = 'submission_' . $submission_id . '.pdf';
+            $file_path = $base_dir . '/' . $filename;
+            $html2pdf->output($file_path, 'F'); // Save to file
+
+            return $base_url . '/' . $filename;
+
+        } catch (Html2PdfException $e) {
+            $html2pdf->clean();
+            $formatter = new ExceptionFormatter($e);
+            echo $formatter->getHtmlMessage();
+            return false;
         }
-
-        $filename = 'submission_' . $submission_id . '.pdf';
-        $file_path = $base_dir . '/' . $filename;
-        $pdf->Output($file_path, 'F');
-
-        return $base_url . '/' . $filename;
     }
 }
