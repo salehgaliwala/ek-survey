@@ -3,6 +3,7 @@
     "description": "WordPress Survey Plugin with PDF generation",
     "require": {
         "tecnickcom/tcpdf": "^6.6",
-        "spipu/html2pdf": "^5.3"
+        "spipu/html2pdf": "^5.3",
+        "phpoffice/phpspreadsheet": "^5.4"
     }
 }

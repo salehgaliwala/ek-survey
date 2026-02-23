@@ -1,0 +1,556 @@
+{
+    "title": "SDWS 429 Baseline Household Survey (Pre-Intervention)",
+    "sections": [
+        {
+            "id": "section_gps_photos",
+            "title": "GPS and Photos",
+            "questions": [
+                {
+                    "id": "1.11",
+                    "label": "GPS coordinates",
+                    "type": "geolocation",
+                    "description": "Click to get current location"
+                },
+                {
+                    "id": "7.1",
+                    "label": "Respondent photo",
+                    "type": "file"
+                },
+                {
+                    "id": "7.2",
+                    "label": "Household photo (not mandatory)",
+                    "type": "file"
+                },
+                {
+                    "id": "7.3",
+                    "label": "Water source photo (not mandatory)",
+                    "type": "file"
+                }
+            ]
+        },
+        {
+            "id": "section_1",
+            "title": "Section 1: Survey purpose, consent and identification",
+            "questions": [
+                {
+                    "id": "1.1",
+                    "label": "Survey purpose",
+                    "type": "radio",
+                    "options": [
+                        "Baseline Study"
+                    ]
+                },
+                {
+                    "id": "1.2",
+                    "label": "Consent to participate",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No (end survey)"
+                    ]
+                },
+                {
+                    "id": "1.3",
+                    "label": "Enumerator name",
+                    "type": "text"
+                },
+                {
+                    "id": "1.4",
+                    "label": "Enumerator ID",
+                    "type": "text"
+                },
+                {
+                    "id": "1.5",
+                    "label": "Date of interview",
+                    "type": "date"
+                },
+                {
+                    "id": "1.6",
+                    "label": "District",
+                    "type": "radio",
+                    "options": [
+                        "Jinja",
+                        "Kamuli",
+                        "Buyende",
+                        "Luuka"
+                    ]
+                },
+                {
+                    "id": "1.7",
+                    "label": "Sub County",
+                    "type": "text"
+                },
+                {
+                    "id": "1.8",
+                    "label": "Parish, Village",
+                    "type": "text"
+                },
+                {
+                    "id": "1.9",
+                    "label": "Premises type",
+                    "type": "radio",
+                    "options": [
+                        "Household",
+                        "School",
+                        "Religious building",
+                        "Community centre",
+                        "Other (specify)"
+                    ]
+                },
+                {
+                    "id": "1.10",
+                    "label": "Is this premises within 1 km of the planned project borehole site?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "section_2",
+            "title": "Section 2: Respondent and household information",
+            "questions": [
+                {
+                    "id": "2.1",
+                    "label": "Respondent Name",
+                    "type": "text"
+                },
+                {
+                    "id": "2.2",
+                    "label": "Phone (if available)",
+                    "type": "text"
+                },
+                {
+                    "id": "2.3",
+                    "label": "Email (if available)",
+                    "type": "email"
+                },
+                {
+                    "id": "2.4",
+                    "label": "Respondent role",
+                    "type": "radio",
+                    "options": [
+                        "Head of household",
+                        "Spouse/partner",
+                        "Adult household member",
+                        "Staff (school/clinic/community building)",
+                        "Other (specify)"
+                    ]
+                },
+                {
+                    "id": "2.5",
+                    "label": "Respondent sex",
+                    "type": "radio",
+                    "options": [
+                        "Female",
+                        "Male",
+                        "Prefer not to say"
+                    ]
+                },
+                {
+                    "id": "2.6",
+                    "label": "Respondent age group",
+                    "type": "radio",
+                    "options": [
+                        "18–24",
+                        "25–34",
+                        "35–44",
+                        "45–54",
+                        "55+"
+                    ]
+                },
+                {
+                    "id": "2.7",
+                    "label": "Total number of people who normally live in this household/premises",
+                    "type": "number"
+                },
+                {
+                    "id": "2.8",
+                    "label": "Number of females (optional)",
+                    "type": "number"
+                },
+                {
+                    "id": "2.9",
+                    "label": "Number of males (optional)",
+                    "type": "number"
+                }
+            ]
+        },
+        {
+            "id": "section_3",
+            "title": "Section 3: Current drinking water sources and access (baseline)",
+            "questions": [
+                {
+                    "id": "3.1",
+                    "label": "What is your current main source of drinking water most days?",
+                    "type": "radio",
+                    "options": [
+                        "Protected borehole/spring",
+                        "Unprotected borehole/spring",
+                        "Piped water/tap",
+                        "Vendor water",
+                        "River/stream",
+                        "Lake/pond",
+                        "Rainwater",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "3.2",
+                    "label": "What is your second most used drinking water source?",
+                    "type": "radio",
+                    "options": [
+                        "No second source",
+                        "Protected borehole/spring",
+                        "Unprotected borehole/spring",
+                        "Piped water/tap",
+                        "Vendor water",
+                        "River/stream",
+                        "Lake/pond",
+                        "Rainwater",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "3.3",
+                    "label": "Do you use your current main source all year round?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Only rainy season",
+                        "Only dry season",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "3.4",
+                    "label": "Do you currently have any water shortages from your main source?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "3.5",
+                    "label": "What challenges do you face when collecting drinking water?",
+                    "type": "checkbox",
+                    "options": [
+                        "Long waiting times",
+                        "Water quality concerns",
+                        "Frequent breakdowns at water point",
+                        "Distance too far",
+                        "High cost",
+                        "No challenges",
+                        "Other (specify)"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "section_4",
+            "title": "Section 4: Drinking water quantity and time (baseline values)",
+            "questions": [
+                {
+                    "id": "4.1",
+                    "label": "On a typical day, how much drinking water does your household collect in total?",
+                    "type": "radio",
+                    "options": [
+                        "Less than 20 litres",
+                        "20–50 litres",
+                        "More than 50 litres",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "4.2",
+                    "label": "Who mainly collects drinking water for this household/premises?",
+                    "type": "radio",
+                    "options": [
+                        "Adult woman",
+                        "Adult man",
+                        "Girl under 18",
+                        "Boy under 18",
+                        "Shared equally",
+                        "Paid water carrier",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "4.3",
+                    "label": "On a typical day, how much total time does your household spend collecting drinking water?",
+                    "type": "radio",
+                    "options": [
+                        "Less than 15 minutes",
+                        "15–30 minutes",
+                        "31–60 minutes",
+                        "61–90 minutes",
+                        "More than 90 minutes",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "4.4",
+                    "label": "On average, how much drinking water does each person drink per day?",
+                    "type": "radio",
+                    "options": [
+                        "Less than 1 litre",
+                        "1–2 litres",
+                        "2–3 litres",
+                        "3–4 litres",
+                        "More than 4 litres",
+                        "Don’t know / Not sure"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "section_5",
+            "title": "Section 5: Treatment and boiling behaviour (baseline)",
+            "questions": [
+                {
+                    "id": "5.1",
+                    "label": "Do you treat drinking water before drinking it?",
+                    "type": "radio",
+                    "options": [
+                        "Yes, always",
+                        "Yes, sometimes",
+                        "No, never",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "5.2",
+                    "label": "What is your main method to make drinking water safe?",
+                    "type": "radio",
+                    "options": [
+                        "Boiling",
+                        "Chlorine",
+                        "Filter",
+                        "Solar disinfection",
+                        "Let it settle only",
+                        "Buy treated water",
+                        "Other (specify)",
+                        "Not applicable (no treatment)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "5.3",
+                    "label": "Before drinking, do you boil your drinking water for safety?",
+                    "type": "radio",
+                    "options": [
+                        "Always",
+                        "Often",
+                        "Sometimes",
+                        "Rarely",
+                        "Never",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "5.4",
+                    "label": "Which statement best describes your usual drinking water?",
+                    "type": "radio",
+                    "options": [
+                        "We drink safe water without boiling",
+                        "We usually boil before drinking",
+                        "We usually use a non-boiling method",
+                        "We do not treat drinking water",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "5.5",
+                    "label": "If you boil drinking water, what stove/device do you mainly use?",
+                    "type": "radio",
+                    "options": [
+                        "Three stone fire (open fire)",
+                        "Improved cookstove",
+                        "Charcoal stove",
+                        "LPG gas stove",
+                        "Electric kettle/stove",
+                        "Other (specify)",
+                        "Not applicable (do not boil)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "5.6",
+                    "label": "If you boil drinking water, what fuel do you mainly use?",
+                    "type": "radio",
+                    "options": [
+                        "Firewood",
+                        "Charcoal",
+                        "LPG",
+                        "Electricity",
+                        "Agricultural residues",
+                        "Other (specify)",
+                        "Not applicable (do not boil)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "5.7",
+                    "label": "For your main boiling fuel, how do you usually get it?",
+                    "type": "radio",
+                    "options": [
+                        "Collect",
+                        "Purchase",
+                        "Both collect and purchase",
+                        "Not applicable (do not boil)",
+                        "Don’t know / Not sure"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "section_6",
+            "title": "Section 6: SDG and optional SDWS claim-support modules",
+            "questions": [
+                {
+                    "id": "6.1",
+                    "label": "In the last 6 months, have you received any hygiene or safe water education or messaging?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.2",
+                    "label": "If yes, how did you receive it?",
+                    "type": "checkbox",
+                    "options": [
+                        "Community meeting / training session",
+                        "Household visit",
+                        "School session",
+                        "Poster / leaflet",
+                        "Radio / public announcement",
+                        "SMS / phone message",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.3",
+                    "label": "If yes, what topics were covered?",
+                    "type": "checkbox",
+                    "options": [
+                        "Handwashing with soap",
+                        "Safe water storage",
+                        "Treating drinking water",
+                        "Keeping the water point clean",
+                        "Latrine use",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.4",
+                    "label": "In the past 2 weeks, has any household member had diarrhoea?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Prefer not to say",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.5",
+                    "label": "In the past 2 weeks, has any household member had cough or breathing problems?",
+                    "type": "radio",
+                    "options": [
+                        "No",
+                        "Yes, mild",
+                        "Yes, severe",
+                        "Prefer not to say",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.6",
+                    "label": "In the past 12 months, has anyone in the household had a burn/accident related to boiling water or cooking?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Prefer not to say",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.7",
+                    "label": "Type of toilet facility usually used",
+                    "type": "radio",
+                    "options": [
+                        "Flush/pour flush to sewer",
+                        "Flush/pour flush to septic tank",
+                        "Pit latrine with slab",
+                        "Pit latrine without slab",
+                        "No facility (bush/field)",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.8",
+                    "label": "Where do members of the household most often wash hands?",
+                    "type": "radio",
+                    "options": [
+                        "Fixed facility (sink/tap)",
+                        "Mobile object (bucket/jug)",
+                        "No handwashing facility",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.9",
+                    "label": "Is water available at the handwashing place?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "No handwashing facility",
+                        "Don’t know / Not sure"
+                    ]
+                },
+                {
+                    "id": "6.10",
+                    "label": "Is soap available at the handwashing place?",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "section_8",
+            "title": "Section 8: Sign-off",
+            "questions": [
+                {
+                    "id": "8.1",
+                    "label": "Respondent signature or thumbprint",
+                    "type": "signature"
+                },
+                {
+                    "id": "8.2",
+                    "label": "Enumerator signature",
+                    "type": "signature"
+                }
+            ]
+        }
+    ]
+}

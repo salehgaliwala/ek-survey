@@ -1,0 +1,851 @@
+{
+    "title": "Baseline Survey",
+    "sections": [
+        {
+            "id": "section_1",
+            "title": "Section 1: Photos and consent",
+            "description": "Note: Only take photos if the respondent agrees. Photos are for audit evidence and QA.",
+            "questions": [
+                {
+                    "id": "1.1",
+                    "label": "Consent to participate in this survey (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No (end survey)"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "1.2",
+                    "label": "Consent to take photos (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No (continue survey)"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "1.3",
+                    "label": "Respondent photo (if consented, otherwise skip)",
+                    "type": "file",
+                    "description": "TAKE PHOTO TOOL - NOT MANDATORY",
+                    "dependency": {
+                        "question": "1.2",
+                        "value": "Yes"
+                    }
+                },
+                {
+                    "id": "1.4",
+                    "label": "Household/premises photo (if consented, otherwise skip)",
+                    "type": "file",
+                    "description": "TAKE PHOTO TOOL - NOT MANDATORY",
+                    "dependency": {
+                        "question": "1.2",
+                        "value": "Yes"
+                    }
+                },
+                {
+                    "id": "1.5",
+                    "label": "Main current drinking water source photo (if available)",
+                    "type": "file",
+                    "description": "TAKE PHOTO TOOL - NOT MANDATORY"
+                },
+                {
+                    "id": "1.6",
+                    "label": "GPS coordinates of premises captured by enumerator",
+                    "type": "geolocation",
+                    "description": "GPS TOOL - NOT MANDATORY (recommended, but contingent on internet connection)"
+                }
+            ]
+        },
+        {
+            "id": "section_2",
+            "title": "Section 2: Survey identification and location",
+            "questions": [
+                {
+                    "id": "2.1",
+                    "label": "Date of interview",
+                    "type": "date",
+                    "required": true
+                },
+                {
+                    "id": "2.2",
+                    "label": "Enumerator ID and name",
+                    "type": "radio",
+                    "options": [
+                        "EKUG1015 - Nambi Babra",
+                        "EKUG1014 - Kirabo Juliet",
+                        "EKUG1013 - Kampi Shamim",
+                        "EKUG1012 - Namaganda Babra",
+                        "EKUG1011 - Naibere Angella",
+                        "EKUG1004 - Mwamiyaidhi Hasifa",
+                        "EKUG1010 - Ademun Angella",
+                        "EKUG1009 - Namukasa Hope Janet",
+                        "EKUG1002 - Musobya Emmanuel",
+                        "EKUG1008 - Kikabi Aziz",
+                        "EKUG1003 - Immaculate Bam Tendo",
+                        "EKUG1001 - Ssebidde Ammex"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "2.3",
+                    "label": "Region / District / Sub-county / Parish / Village",
+                    "type": "radio",
+                    "options": [
+                        "Jinja",
+                        "Kamuli",
+                        "Luuka",
+                        "Buyende",
+                        "Other (specify)"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "2.4",
+                    "label": "Sub County",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "id": "2.5",
+                    "label": "Parish, Village",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "id": "2.6",
+                    "label": "Premises type (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Household",
+                        "School",
+                        "Religious building",
+                        "Community centre",
+                        "Other (specify)"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "2.7",
+                    "label": "If there is a potential planned project, what is assigned borehole number? (if no project is planned, leave this blank)",
+                    "type": "text",
+                    "required": false
+                },
+                {
+                    "id": "2.8",
+                    "label": "If there is a potential planned project, what is the distance to this planned project?",
+                    "type": "radio",
+                    "options": [
+                        "Less than 500m (Less than 6 minutes walk)",
+                        "Between 500m and 1km (Between 6 minutes and 12 minutes walk)",
+                        "More than 1km (more than 12 minute walk)",
+                        "Not applicable"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "section_3",
+            "title": "Section 3: Respondent and household/premises profile",
+            "questions": [
+                {
+                    "id": "3.1",
+                    "label": "Respondent name",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "id": "3.2",
+                    "label": "Respondent phone number (optional)",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "id": "3.3",
+                    "label": "Respondent role (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Head of household",
+                        "Spouse/partner",
+                        "Adult household member",
+                        "Staff (school/clinic/community building)",
+                        "Other (specify)"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "3.4",
+                    "label": "Respondent sex (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Female",
+                        "Male",
+                        "Prefer not to say"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "3.5",
+                    "label": "Respondent age group (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "18–24",
+                        "25–34",
+                        "35–44",
+                        "45–54",
+                        "55+"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "3.6",
+                    "label": "Total number of people who normally live/use this premises (number) [SDWS 25 HNp,y]",
+                    "type": "number",
+                    "required": true
+                },
+                {
+                    "id": "3.7",
+                    "label": "Of these people, how many are under the age of 5?",
+                    "type": "number",
+                    "required": true
+                },
+                {
+                    "id": "3.8",
+                    "label": "How many people usually drink water from the project borehole? (number) [supports SDG 6 Py and SDWS 26]",
+                    "type": "number",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_4",
+            "title": "Section 4: Drinking water sources and access (baseline)",
+            "questions": [
+                {
+                    "id": "4.1",
+                    "label": "Current main source of drinking water most days (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Unprotected borehole/spring",
+                        "River/stream",
+                        "Lake/pond",
+                        "Rainwater",
+                        "Protected borehole/spring",
+                        "Piped water/tap",
+                        "Vendor water",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "4.2",
+                    "label": "Second most used drinking water source (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "No second source",
+                        "Unprotected borehole/spring",
+                        "River/stream",
+                        "Lake/pond",
+                        "Rainwater",
+                        "Protected borehole/spring",
+                        "Piped water/tap",
+                        "Vendor water",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "4.3",
+                    "label": "Do you use your main drinking water source all year round? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Only rainy season",
+                        "Only dry season",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "4.4",
+                    "label": "Do you experience shortages from your main drinking water source? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "4.5",
+                    "label": "Main challenges when collecting drinking water (tick all that apply)",
+                    "type": "checkbox",
+                    "options": [
+                        "Difficult terrain",
+                        "Distance too far",
+                        "Long waiting times",
+                        "Water quality concerns",
+                        "Frequent breakdowns at water point",
+                        "High cost",
+                        "No challenges",
+                        "Other (specify)"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "4.6",
+                    "label": "Do you think the current water availability meets your household’s needs? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_5",
+            "title": "Section 5: Water collection time and main collector (SDG 5 baseline)",
+            "description": "Note: This section measures baseline time spent collecting drinking water (Tb,y).",
+            "questions": [
+                {
+                    "id": "5.1",
+                    "label": "Who mainly collects drinking water for this premises? (tick one) [SDG 5 support]",
+                    "type": "radio",
+                    "options": [
+                        "Adult woman",
+                        "Adult man",
+                        "Girl under 18",
+                        "Boy under 18",
+                        "Shared equally",
+                        "Paid water carrier",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "5.2",
+                    "label": "On a typical day, how much total time does your household spend collecting drinking water (walking, waiting, filling, returning) from all sources? (tick one) [SDG5 Tb,y]",
+                    "type": "radio",
+                    "options": [
+                        "Less than 15 minutes",
+                        "15–30 minutes",
+                        "31–60 minutes",
+                        "61–90 minutes",
+                        "More than 90 minutes",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_6",
+            "title": "Section 6: Drinking water quantity for drinking (SDWS 24)",
+            "description": "Note: Per-person drinking water amount (not total water fetched). Use this to compute SDWS 24 and apply the cap in analysis.",
+            "questions": [
+                {
+                    "id": "6.1",
+                    "label": "On a typical day, how much drinking water does each person drink? (tick one) [SDWS 24 QPWp]",
+                    "type": "radio",
+                    "options": [
+                        "Less than 1 litre",
+                        "1–2 litres",
+                        "2–3 litres",
+                        "3–4 litres",
+                        "4–5 litres",
+                        "More than 5 litres",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_7",
+            "title": "Section 7: Treatment and boiling behaviour (baseline)",
+            "description": "Note: Supports SDWS 12 (Cb concept), SDG 3 baseline boiling, and SDWS 22 baseline context.",
+            "questions": [
+                {
+                    "id": "7.1",
+                    "label": "Do you treat drinking water before drinking it? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes, always",
+                        "Yes, sometimes",
+                        "No, never",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "7.2",
+                    "label": "Main method used to make drinking water safe (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Boiling",
+                        "Chlorine",
+                        "Filter",
+                        "Solar disinfection",
+                        "Let it settle only",
+                        "Buy treated water",
+                        "Other (specify)",
+                        "Not applicable (no treatment)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "7.3",
+                    "label": "Do you boil drinking water for safety? (tick one) [SDG3 Pb,boil]",
+                    "type": "radio",
+                    "options": [
+                        "Always",
+                        "Often",
+                        "Sometimes",
+                        "Rarely",
+                        "Never",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "7.4",
+                    "label": "Which statement best describes your usual drinking water? (tick one) [SDWS 12 Cb concept]",
+                    "type": "radio",
+                    "options": [
+                        "We drink safe water without boiling",
+                        "We usually boil before drinking",
+                        "We usually use a non-boiling method",
+                        "We do not treat drinking water",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_7a",
+            "title": "Section 7a: Stove/device and fuel used for boiling drinking water (SDWS 6, 8, 11)",
+            "description": "Note: Ask about boiling drinking water (not cooking generally). This supports baseline shares for devices and fuels.",
+            "dependency": {
+                "question": "7.2",
+                "value": "Boiling",
+                "condition": "equals"
+            },
+            "questions": [
+                {
+                    "id": "7a.1",
+                    "label": "What type(s) of stoves do you use for cooking or boiling water? (tick all that apply) [context / SDWS 6]",
+                    "type": "checkbox",
+                    "options": [
+                        "Traditional three-stone fire",
+                        "Improved cookstove",
+                        "Gas stove (LPG)",
+                        "Electric stove/kettle",
+                        "Charcoal stove",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "7a.2",
+                    "label": "How many stoves/cooking devices does your household have in total? (number)",
+                    "type": "number",
+                    "required": true
+                },
+                {
+                    "id": "7a.3",
+                    "label": "If you boil drinking water, which stove/device do you mainly use? (tick one) [SDWS 11 shares]",
+                    "type": "radio",
+                    "options": [
+                        "Three stone fire (open fire)",
+                        "Improved cookstove",
+                        "Charcoal stove",
+                        "LPG gas stove",
+                        "Electric kettle/stove",
+                        "Other (specify)",
+                        "Not applicable (do not boil)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "7a.4",
+                    "label": "If you boil drinking water, which fuel do you mainly use? (tick one) [SDWS 8 shares]",
+                    "type": "radio",
+                    "options": [
+                        "Firewood",
+                        "Charcoal",
+                        "LPG",
+                        "Electricity",
+                        "Agricultural residues",
+                        "Other (specify)",
+                        "Not applicable (do not boil)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "7a.5",
+                    "label": "7a.5 Is the wood used for boiling water bought or is it collected (found, chopped or obtained in another way).",
+                    "type": "radio",
+                    "options": [
+                        "nothing is bought (0%)",
+                        "majority is bought (75%)",
+                        "half is bought (50%)",
+                        "small part bought(25%)",
+                        "nothing bought (0%)",
+                        "Not applicable (do not boil)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "7a.6",
+                    "label": "Of the collected wood, how much is found (picked up from the ground) and how much is chopped by cutting down plants or trees.",
+                    "type": "radio",
+                    "options": [
+                        "all is chopped (100%)",
+                        "majority chopped (75%)",
+                        "half chopped (50%)",
+                        "small part chopped (25%)",
+                        "nothing chopped (0%)",
+                        "Not applicable (do not boil)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "7a.7",
+                    "label": "If you also chop, do you chop trees on own ground?",
+                    "type": "radio",
+                    "options": [
+                        "Yes, always",
+                        "Yes, most of the time",
+                        "Yes, occasionally / sometimes",
+                        "Yes, but barely",
+                        "No, never",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_7b",
+            "title": "Section 7b: Water boiling practice and efficiency (cross-checks)",
+            "description": "Note: These are cross-check questions (not required for the default per-litre route). Keep for QA and plausibility.",
+            "dependency": {
+                "question": "7.2",
+                "value": "Boiling",
+                "condition": "equals"
+            },
+            "questions": [
+                {
+                    "id": "8.1",
+                    "label": "8.1 On average, how long does it take to boil 1 litre of water for drinking using your main boiling stove/device? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Less than 5 minutes",
+                        "5–10 minutes",
+                        "More than 10 minutes",
+                        "Not applicable",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "8.2",
+                    "label": "How often do you boil drinking water in a day? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Never",
+                        "Once",
+                        "2–3 times",
+                        "More than 3 times",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "8.3",
+                    "label": "Do you mix methods to boil water (use multiple stove types)? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Not applicable",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "8.4",
+                    "label": "If cost were not a concern, would you use more fuel for boiling drinking water? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Not applicable",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "8.5",
+                    "label": "If yes, estimate how much more (optional)",
+                    "type": "text",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_9",
+            "title": "Section 9: Service feedback and satisfaction",
+            "questions": [
+                {
+                    "id": "9.1",
+                    "label": "Are you satisfied with the quality of your current main drinking water source? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Sometimes",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "9.2",
+                    "label": "What improvements would you recommend for local drinking water services? (tick all that apply)",
+                    "type": "checkbox",
+                    "options": [
+                        "Better water quality",
+                        "Easier access",
+                        "Reduced waiting times",
+                        "More water points in the area",
+                        "No recommendations",
+                        "Other (specify)"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "9.3",
+                    "label": "Do you prefer your main source over other sources? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "9.4",
+                    "label": "Would the availability of alternative water solutions reduce your dependence on forest resources? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure",
+                        "Not applicable"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_10",
+            "title": "Section 10: SDG impact support (Health, sanitation, hygiene education)",
+            "questions": [
+                {
+                    "id": "10.1",
+                    "label": "In the past month, has any household member experienced waterborne illness? (tick all that apply) [SDG 3 support]",
+                    "type": "checkbox",
+                    "options": [
+                        "No",
+                        "Yes, diarrhoea",
+                        "Yes, cholera",
+                        "Yes, other (specify)",
+                        "Prefer not to say",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.2",
+                    "label": "Has anyone in your household experienced respiratory conditions linked to smoke from cooking or boiling water? (tick one) [SDG 3 support]",
+                    "type": "radio",
+                    "options": [
+                        "No",
+                        "Yes, mild",
+                        "Yes, severe",
+                        "Prefer not to say",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.3",
+                    "label": "Have there been burns/accidents related to water heating or cooking in the past year? (tick one) [SDG 3 support]",
+                    "type": "radio",
+                    "options": [
+                        "No",
+                        "Yes, minor burns",
+                        "Yes, major burns",
+                        "Prefer not to say",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.4",
+                    "label": "Toilet facility type used (tick one) [SDG 6 support]",
+                    "type": "radio",
+                    "options": [
+                        "Flush/pour flush to sewer",
+                        "Flush/pour flush to septic tank",
+                        "Pit latrine with slab",
+                        "Pit latrine without slab",
+                        "No facility (bush/field)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.5",
+                    "label": "Do you share this toilet facility with other households? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "No",
+                        "Yes, with 1–2 other households",
+                        "Yes, with more than 2 households",
+                        "Don’t know / Not sure",
+                        "Not applicable"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.6",
+                    "label": "Where is this toilet facility located? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "In own dwelling",
+                        "In own yard/plot",
+                        "Elsewhere",
+                        "Don’t know / Not sure",
+                        "Not applicable"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.7",
+                    "label": "Where do members of the household most often wash hands? (tick one) [SDG 6 support]",
+                    "type": "radio",
+                    "options": [
+                        "Fixed facility (sink/tap)",
+                        "Mobile object (bucket/jug)",
+                        "No handwashing facility",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.8",
+                    "label": "Is water available at the handwashing place? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "No handwashing facility",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.9",
+                    "label": "Is soap available at the handwashing place? (tick one)",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.10",
+                    "label": "In the last 6 months, have you received any hygiene or safe water education or messaging? (tick one) [SDWS 20]",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.11",
+                    "label": "If yes, how did you receive it? (tick all that apply)",
+                    "type": "checkbox",
+                    "options": [
+                        "Community meeting / training session",
+                        "Household visit",
+                        "School session",
+                        "Poster / leaflet",
+                        "Radio / public announcement",
+                        "SMS / phone message",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                },
+                {
+                    "id": "10.12",
+                    "label": "If yes, what topics were covered? (tick all that apply)",
+                    "type": "checkbox",
+                    "options": [
+                        "Handwashing with soap",
+                        "Safe water storage",
+                        "Treating drinking water",
+                        "Keeping the water point clean",
+                        "Latrine use",
+                        "Other (specify)",
+                        "Don’t know / Not sure"
+                    ],
+                    "required": true
+                }
+            ]
+        },
+        {
+            "id": "section_11",
+            "title": "Section 11: Sign-off",
+            "questions": [
+                {
+                    "id": "11.1",
+                    "label": "Respondent Signature",
+                    "type": "signature",
+                    "description": "Sign above using touch or mouse"
+                },
+                {
+                    "id": "11.2",
+                    "label": "Enumerator signature",
+                    "type": "signature",
+                    "description": "Sign above using touch or mouse"
+                }
+            ]
+        }
+    ]
+}

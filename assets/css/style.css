@@ -285,3 +285,8 @@ button.ek-btn-submit:hover,
     color: #cbd5e1;
 }
 
+
+.ek-hidden-section,
+.ek-hidden-field {
+    display: none !important;
+}

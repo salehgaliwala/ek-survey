@@ -35,9 +35,17 @@ To display the survey, use the shortcode on any page:
     *   **Camera**: In Section 7, click "Choose File" (on mobile this should offer Camera option). Select or capture an image.
     *   **Signature**: In Section 8, use your mouse or touch screen to draw a signature on the canvas.
 4.  **Submit**: Click "Submit Survey".
-5.  **Check Result**: You should see a success message with a "Download PDF Report" link. The PDF should contain your signature image.
+5.  **Offline Support**:
+    *   **Ensure Proper Deployment**: The files `ek-survey.php` and `assets/js/service-worker.js` must be deployed to the HTTPS server.
+    *   **Test**: Open the survey while online. Turn off internet (or use DevTools > Network > Offline). Reload the page. The survey should still load.
+    *   **Submission**: Fill the form offline and click Submit. You should see a "Saved Offline!" message.
+    *   **Sync**: Reconnect to the internet. The pending submissions will automatically sync.
+6.  **Automated Testing**:
+    *   Run `python tests/offline_test.py` to verify the offline flow automatically (requires Selenium). Note: This test requires the code to be deployed to `https://ek.eco`.
 
-6.  **Admin Dashboard**:
+7.  **Check Result**: You should see a success message with a "Download PDF Report" link. The PDF should contain your signature image.
+
+8.  **Admin Dashboard**:
     *   Go to **WP Admin > EK Survey**.
     *   **Filter**: Select "Monitoring Project Borehole" from the dropdown.
     *   **View**: Verify your submission appears in the table with ID, Date, and PDF Link.

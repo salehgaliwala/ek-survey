@@ -1,41 +1,54 @@
 
 import time
 import os
-import argparse
-import urllib.request
 import random
+import urllib.request
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, ElementClickInterceptedException
 
 # Configuration
-BASELINE_URL = "https://ek.eco/survey-baseline"
-MONITORING_URL = "https://ek.eco/survey-monitoring" # Assumed
+URL = "https://ek.eco/survey-baseline" 
 CUSTOM_IMAGE_PATH = r"C:\Users\Admin\Downloads\WhatsApp Image 2026-02-05 at 12.36.55 PM.jpeg"
 DUMMY_IMAGE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "dummy.jpg"))
 
-def setup_driver(headless=False):
+def setup_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
-    # options.add_argument("--incognito") # valid for fresh session
-    if headless:
-        options.add_argument("--headless")
     
     prefs = {"profile.default_content_setting_values.geolocation": 1}
     options.add_experimental_option("prefs", prefs)
-    
+
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
+def set_network_conditions(driver, offline=False):
+    if offline:
+        driver.execute_cdp_cmd("Network.enable", {})
+        driver.execute_cdp_cmd("Network.emulateNetworkConditions", {
+            "offline": True,
+            "latency": 0,
+            "downloadThroughput": 0,
+            "uploadThroughput": 0,
+        })
+        print("Network functionality disabled (Offline Mode).")
+    else:
+        driver.execute_cdp_cmd("Network.enable", {})
+        driver.execute_cdp_cmd("Network.emulateNetworkConditions", {
+            "offline": False,
+            "latency": 0,
+            "downloadThroughput": -1,
+            "uploadThroughput": -1,
+        })
+        print("Network functionality enabled (Online Mode).")
+
 def download_sample_images():
     if os.path.exists(CUSTOM_IMAGE_PATH):
-        print(f"Using custom image from: {CUSTOM_IMAGE_PATH}")
         return [CUSTOM_IMAGE_PATH]
 
     images = [
@@ -58,7 +71,7 @@ def download_sample_images():
         downloaded_paths.append(path)
     return downloaded_paths
 
-def fill_visible_fields(driver, image_paths, overrides):
+def fill_visible_fields(driver, image_paths, overrides={}):
     try:
         active_section = driver.find_element(By.CSS_SELECTOR, ".ek-survey-section.active")
     except:
@@ -74,29 +87,19 @@ def fill_visible_fields(driver, image_paths, overrides):
         input_type = inp.get_attribute("type")
         parent_class = inp.find_element(By.XPATH, "./..").get_attribute("class")
         
-        # Check override for text inputs (rare but possible)
-        # overrides format: {'responses[7.2]': 'Boiling'} - usually questions are radios/selects.
-        
         if "ek-geo-wrapper" in parent_class:
             driver.execute_script("arguments[0].value = '0.3476, 32.5825';", inp)
-            print(f"Filled Geolocation: {name}")
         elif input_type == "date":
              driver.execute_script("arguments[0].value = '2026-02-11';", inp)
-             print(f"Filled Date: {name}")
         elif input_type == "number":
              val = str(random.randint(1, 10))
              inp.send_keys(val)
-             print(f"Filled Number: {name} -> {val}")
         elif input_type == "email":
              inp.send_keys(f"test{random.randint(100,999)}@example.com")
-             print(f"Filled Email: {name}")
         elif "other" in name or "Other" in name: 
-            # Only fill if visible (which means 'Other' radio/checkbox was checked)
             inp.send_keys("Random Other Text")
-            print(f"Filled Other: {name}")
         else:
             inp.send_keys("Test Value")
-            print(f"Filled Input: {name}")
 
     # 2. Radios
     radios = active_section.find_elements(By.CSS_SELECTOR, "input[type='radio']")
@@ -108,12 +111,9 @@ def fill_visible_fields(driver, image_paths, overrides):
         groups[name].append(r)
 
     for name, options in groups.items():
-        # Check if already selected
         if any(opt.is_selected() for opt in options): continue
         
         target = None
-        
-        # 1. Overrides (High Priority)
         if name in overrides:
             wanted_val = overrides[name]
             for opt in options:
@@ -121,12 +121,9 @@ def fill_visible_fields(driver, image_paths, overrides):
                     target = opt
                     break
         
-        # 2. Defaults (Critical Flow)
         if not target:
-            defaults = {
-                "responses[1.1]": "Yes", # Consent
-                "responses[1.2]": "Yes", # Photo Consent
-            }
+             # Default yes for consent
+            defaults = {"responses[1.1]": "Yes", "responses[1.2]": "Yes"}
             if name in defaults:
                 wanted_val = defaults[name]
                 for opt in options:
@@ -134,14 +131,11 @@ def fill_visible_fields(driver, image_paths, overrides):
                         target = opt
                         break
 
-        # 3. Random
         if not target:
             target = random.choice(options)
         
         driver.execute_script("arguments[0].click();", target)
         driver.execute_script("arguments[0].dispatchEvent(new Event('change', { bubbles: true }));", target)
-        print(f"Clicked Radio: {name} -> {target.get_attribute('value')}")
-
 
     # 3. Checkboxes
     checkboxes = active_section.find_elements(By.CSS_SELECTOR, "input[type='checkbox']")
@@ -149,34 +143,17 @@ def fill_visible_fields(driver, image_paths, overrides):
     for cb in checkboxes:
         if not cb.is_displayed(): continue
         name = cb.get_attribute("name")
-        # name is usually "responses[7a.1][]" for multi-select
-        # Group by name to handle "tick all that apply" properly
         base_name = name
         if base_name not in cb_groups: cb_groups[base_name] = []
         cb_groups[base_name].append(cb)
 
     for name, options in cb_groups.items():
-        # Check if any selected
         if any(opt.is_selected() for opt in options): continue
-        
-        # Randomly select 1 to all
-        # 20% chance to select "Other" if exists
-        
-        # Filter out "Other" from main random pool to handle it specifically? 
-        # Actually random selection works fine.
-        
         count = random.randint(1, len(options))
         targets = random.sample(options, count)
-        
         for target in targets:
              driver.execute_script("arguments[0].click();", target)
              driver.execute_script("arguments[0].dispatchEvent(new Event('change', { bubbles: true }));", target)
-             print(f"Clicked Checkbox: {name} -> {target.get_attribute('value')}")
-             
-             # If this triggered an 'other' input, the input loop will catch it in next pass? 
-             # No, inputs loop runs before. But `fill_visible_fields` runs in a loop in `run_test`.
-             # So subsequent calls will fill the now-visible Other input.
-
 
     # 4. Files
     file_inputs = active_section.find_elements(By.CSS_SELECTOR, "input[type='file']")
@@ -184,7 +161,6 @@ def fill_visible_fields(driver, image_paths, overrides):
         if finp.get_attribute("value"): continue
         img_to_use = image_paths[i % len(image_paths)]
         finp.send_keys(img_to_use)
-        print(f"Uploaded File: {finp.get_attribute('name')}")
 
     # 5. Signatures
     canvases = active_section.find_elements(By.CSS_SELECTOR, "canvas.ek-signature-canvas")
@@ -199,119 +175,123 @@ def fill_visible_fields(driver, image_paths, overrides):
         actions = ActionChains(driver)
         actions.move_to_element(canvas).click_and_hold().move_by_offset(20, 20).release().perform()
         driver.execute_script("arguments[0].dispatchEvent(new Event('mouseup', { bubbles: true }));", canvas)
-        print("Signed Signature Pad")
 
-def run_scenario(scenario_name, url, overrides):
-    print(f"\n\n=== STARTING SCENARIO: {scenario_name} ===")
-    print(f"Target URL: {url}")
-    print(f"Overrides: {overrides}")
-    
+def run_offline_test():
     driver = setup_driver()
     image_paths = download_sample_images()
-    
     try:
-        driver.get(url)
+        print("1. Opening Page Online to install Service Worker...")
+        driver.get(URL)
+        time.sleep(5) 
+
+
+        # Wait for SW to be ready and controlling
+        print("Waiting for Service Worker to activate and control the page...")
+        for i in range(5):
+            is_sw_active = driver.execute_script("return navigator.serviceWorker.controller !== null;")
+            if is_sw_active:
+                print("Service Worker is now controlling the page.")
+                break
+            
+            if i == 0:
+                 driver.refresh()
+                 print("Refreshed page to claim clients.")
+            
+            time.sleep(2)
+        else:
+            print("WARNING: Service Worker did not take control. Test might fail.")
+
+        # Extra wait for cache priming (fetch request in SW ready)
         time.sleep(3)
-        
-        # Check if 404
-        if "Page not found" in driver.title:
-            print("Page not found! Skipping.")
+
+        print("2. Going Offline...")
+        set_network_conditions(driver, offline=True)
+        time.sleep(1)
+
+        print("3. Refreshing Page (Offline Mode)...")
+        try:
+            driver.get(URL)
+        except Exception as e:
+            print(f"Navigation failed (expected if SW broken): {e}")
+            # If navigation fails, we can't continue
             return
 
-        step = 1
-        max_steps = 30 
-        
-        while step < max_steps:
-            # print(f"--- Step {step} ---")
-            fill_visible_fields(driver, image_paths, overrides)
-            time.sleep(1) # Let JS run
+        time.sleep(2)
 
-            # Next Button
-            next_btns = driver.find_elements(By.CSS_SELECTOR, ".ek-btn-next")
-            visible_next = [b for b in next_btns if b.is_displayed()]
-            
-            # Remove cookie banner
+        
+        try:
+            driver.find_element(By.CSS_SELECTOR, ".ek-survey-container")
+            print("SUCCESS: Survey container loaded offline!")
+        except:
+            print("FAILURE: Survey container NOT found offline.")
+            return
+
+        print("4. Filling Form (Offline Mode)...")
+        step = 1
+        max_steps = 30
+        overrides = {"responses[7.2]": "Chlorine"}
+
+        while step < max_steps:
+             # Remove cookie banner
             try:
                 driver.execute_script("var element = document.getElementById('CybotCookiebotDialog'); if(element) { element.parentNode.removeChild(element); }")
             except: pass
-                
+
+            fill_visible_fields(driver, image_paths, overrides)
+            time.sleep(0.5)
+
+            next_btns = driver.find_elements(By.CSS_SELECTOR, ".ek-btn-next")
+            visible_next = [b for b in next_btns if b.is_displayed()]
+            
             if visible_next:
-                # print("Clicking Next...")
                 driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", visible_next[0])
                 time.sleep(0.5)
                 driver.execute_script("arguments[0].click();", visible_next[0])
-                time.sleep(1.5)
+                time.sleep(1)
                 step += 1
             else:
-                # Submit
                 submit_btns = driver.find_elements(By.CSS_SELECTOR, ".ek-btn-submit")
                 visible_submit = [b for b in submit_btns if b.is_displayed()]
                 
                 if visible_submit:
-                    print(f"Submit button found at step {step}. Submitting...")
+                    print(f"Submit button found at step {step}. Submitting Offline...")
                     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", visible_submit[0])
                     time.sleep(0.5)
                     driver.execute_script("arguments[0].click();", visible_submit[0])
                     
                     print("Waiting for success message...")
                     try:
-                        WebDriverWait(driver, 30).until(
+                        WebDriverWait(driver, 10).until(
                             EC.presence_of_element_located((By.CSS_SELECTOR, ".ek-success-message"))
                         )
-                        print(f"SUCCESS! {scenario_name} Submitted.")
+                        success_msg = driver.find_element(By.CSS_SELECTOR, ".ek-success-message").text
+                        print(f"Submission Result: {success_msg}")
                         
-                        try:
-                            dl_btn = driver.find_element(By.CSS_SELECTOR, ".ek-btn-download")
-                            print("PDF Link Found: " + dl_btn.get_attribute("href"))
-                        except:
-                            print("PDF Link NOT found.")
-
+                        if "Saved Offline" in success_msg:
+                            print("SUCCESS: Form saved offline correctly!")
+                        else:
+                            print("WARNING: Unexpected success message (maybe online?)")
+                            
                     except TimeoutException:
-                        print(f"FAILED: {scenario_name} timed out waiting for success.")
-                        
+                        print("FAILED: Timed out waiting for offline save confirmation.")
+                    
                     break
                 else:
-                    # No Next, No Submit -> Stuck?
-                    # Could be validation error
                     errors = driver.find_elements(By.CSS_SELECTOR, ".ek-has-error")
                     if errors:
                         print("Validation Errors Found!")
-                    else:
-                        # Maybe still loading or animation?
-                        pass
+                        # Debug: print first error
+                        # print(errors[0].get_attribute('outerHTML'))
                     
-                    # Prevent infinite loop if stuck
-                    if step > 25: 
-                        print("Stuck too long. Exiting.")
+                    if step > 25:
+                        print("Stuck. Exiting loop.")
                         break
+
     except Exception as e:
-        print(f"Scenario Error: {e}")
+        print(f"Test Error: {e}")
     finally:
+        set_network_conditions(driver, offline=False)
         driver.quit()
 
 if __name__ == "__main__":
-    SCENARIOS = [
-        {
-            "name": "Baseline Survey - Non-Boiling (Chlorine)",
-            "url": BASELINE_URL,
-            "overrides": {"responses[7.2]": "Chlorine"}
-        },
-        {
-            "name": "Baseline Survey - Boiling",
-            "url": BASELINE_URL,
-            "overrides": {"responses[7.2]": "Boiling"}
-        },
-        {
-            "name": "Monitoring Survey - Non-Boiling (Never)",
-            "url": MONITORING_URL,
-            "overrides": {"responses[7.2]": "Never"}
-        },
-        {
-            "name": "Monitoring Survey - Boiling (Always)",
-            "url": MONITORING_URL,
-            "overrides": {"responses[7.2]": "Always"}
-        }
-    ]
-
-    for sc in SCENARIOS:
-        run_scenario(sc["name"], sc["url"], sc["overrides"])
+    run_offline_test()

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Debug - Simulated Output</title>
+    <style>
+        /* Simulate A4 page: 210mm wide, with 10mm margins on each side = 190mm content */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #ccc;
+            font-family: Arial, sans-serif;
+        }
+
+        .page-wrapper {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            background: #fff;
+            padding: 7mm 10mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            /* The content area inside is exactly 190mm */
+        }
+
+        .content-area-guide {
+            width: 190mm;
+            border: 2px dashed red;
+            padding: 0;
+            margin: 0;
+            position: relative;
+        }
+
+        .content-area-guide::before {
+            content: "← 190mm content area →";
+            position: absolute;
+            top: -18px;
+            left: 0;
+            font-size: 10px;
+            color: red;
+        }
+    </style>
+
+    <!-- This is the EXACT same CSS from class-pdf-generator.php -->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th,
+        td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .section-title {
+            background-color: #f0f0f0;
+            font-size: 14pt;
+            font-weight: bold;
+            padding: 5px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .question-label {
+            font-weight: bold;
+            font-size: 11pt;
+            margin-bottom: 2px;
+        }
+
+        .answer-text {
+            font-size: 11pt;
+            margin-bottom: 5px;
+        }
+
+        .photo-grid {
+            width: 190mm;
+            border-collapse: collapse;
+        }
+
+        .photo-grid td {
+            width: 60mm;
+            text-align: center;
+            vertical-align: top;
+            border: none;
+            padding: 2mm;
+        }
+
+        .signature-grid {
+            width: 190mm;
+            border-collapse: collapse;
+        }
+
+        .signature-grid td {
+            width: 90mm;
+            text-align: center;
+            vertical-align: top;
+            border: none;
+            padding: 2mm;
+        }
+
+        .photo-label {
+            font-weight: bold;
+            font-size: 10pt;
+            margin-top: 2mm;
+        }
+
+        .photo-sub-label {
+            font-style: italic;
+            font-size: 9pt;
+        }
+
+        .img-container {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 2mm;
+            margin-top: 2mm;
+            background-color: #fcfcfc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 style="text-align:center; color: #333;">PDF Debug View — Red dashed = 190mm content boundary</h2>
+
+    <div class="page-wrapper">
+        <div class="content-area-guide">
+
+            <!-- ============================================ -->
+            <!-- This is the EXACT HTML that Html2Pdf receives -->
+            <!-- (minus the <page> tag which is Html2Pdf-specific) -->
+            <!-- ============================================ -->
+
+            <h1 style="text-align: center;">Baseline Survey</h1>
+
+            <div
+                style="margin-bottom: 20px; padding: 10px; background: #f9f9f9; border: 1px solid #ccc; font-size: 10pt; line-height: 1.4;">
+                <strong>Baseline Household Survey (Pre-intervention)</strong><br>
+                GS Project ID - GS12963<br>
+                Full version (Carbon + SDG modules).<br>
+                For Gold Standard Methodology 429 (Safe Drinking Water Supply).<br><br>
+                <strong>Enumerator guidance:</strong> Ask questions exactly as written. Tick one box unless it says
+                "tick all
+                that apply". If the respondent does not know, tick "Don't know / Not sure". Record numbers only where
+                requested.
+                For monitoring, "before the project" refers to the situation before the borehole was
+                installed/rehabilitated.
+            </div>
+
+            <!-- ========== SECTION 1: Photos and consent ========== -->
+            <div class="section-title">Section 1: Photos and consent</div>
+
+            <!-- Text/radio questions -->
+            <div class="question-wrapper">
+                <div class="question-label">1.1 Consent to participate in this survey (tick one)</div>
+                <div class="answer-text">Answer: Yes</div>
+            </div>
+            <div class="question-wrapper">
+                <div class="question-label">1.2 Consent to take photos (tick one)</div>
+                <div class="answer-text">Answer: Yes</div>
+            </div>
+
+            <!-- Photos in one row — EXACT same structure as PHP generates -->
+            <table cellspacing="0" cellpadding="0" style="width: 190mm; border-collapse: collapse; margin-top: 3mm;">
+                <tr>
+                    <td style="width: 60mm; vertical-align: top; padding: 1mm; text-align: center;">
+                        <div style="font-weight: bold; font-size: 8pt; margin-bottom: 1mm;">
+                            1.3 Respondent photo (if consented, otherwise skip)
+                        </div>
+                        <div style="text-align: center; padding: 1mm;">
+                            <!-- Using placeholder image to simulate a real photo -->
+                            <img src="https://picsum.photos/400/600" style="width: 50mm;">
+                        </div>
+                    </td>
+                    <td style="width: 60mm; vertical-align: top; padding: 1mm; text-align: center;">
+                        <div style="font-weight: bold; font-size: 8pt; margin-bottom: 1mm;">
+                            1.4 Household/premises photo (if consented, otherwise skip)
+                        </div>
+                        <div style="text-align: center; padding: 1mm;">
+                            <div style="height: 20mm; line-height: 20mm; background: #eee; font-size: 10pt;">[No Image]
+                            </div>
+                        </div>
+                    </td>
+                    <td style="width: 60mm; vertical-align: top; padding: 1mm; text-align: center;">
+                        <div style="font-weight: bold; font-size: 8pt; margin-bottom: 1mm;">
+                            1.5 Main current drinking water source photo (if available)
+                        </div>
+                        <div style="text-align: center; padding: 1mm;">
+                            <div style="height: 20mm; line-height: 20mm; background: #eee; font-size: 10pt;">[No Image]
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- GPS question -->
+            <div class="question-wrapper" style="margin-top:10px;">
+                <div class="question-label">1.6 GPS coordinates of premises captured by enumerator</div>
+                <div class="answer-text">Answer: N/A</div>
+            </div>
+
+            <!-- ========== SECTION 2: Survey identification ========== -->
+            <div class="section-title">Section 2: Survey identification and location</div>
+
+            <div class="question-wrapper">
+                <div class="question-label">2.1 Date of interview</div>
+                <div class="answer-text">Answer: 2026-02-20</div>
+            </div>
+            <br>
+            <div class="question-wrapper">
+                <div class="question-label">2.2 Enumerator name / ID</div>
+                <div class="answer-text">Answer: EKUG1007 - Chuka Lameck</div>
+            </div>
+            <br>
+            <div class="question-wrapper">
+                <div class="question-label">2.3 District</div>
+                <div class="answer-text">Answer: Kasungu</div>
+            </div>
+            <br>
+
+            <!-- ========== SECTION 3: Respondent information ========== -->
+            <div class="section-title">Section 3: Respondent information</div>
+
+            <div class="question-wrapper">
+                <div class="question-label">3.1 Respondent name</div>
+                <div class="answer-text">Answer: Muatiki Abudallah</div>
+            </div>
+            <br>
+            <div class="question-wrapper">
+                <div class="question-label">3.2 Gender</div>
+                <div class="answer-text">Answer: Male</div>
+            </div>
+            <br>
+
+            <!-- ========== SECTION 11: Sign-off (Signatures) ========== -->
+            <div class="section-title">Section 11: Sign-off</div>
+
+            <!-- Signatures in one row — EXACT same structure as PHP generates -->
+            <table cellspacing="0" cellpadding="0" style="width: 190mm; border-collapse: collapse; margin-top: 3mm;">
+                <tr>
+                    <td style="width: 90mm; vertical-align: top; padding: 2mm; text-align: center;">
+                        <div style="font-weight: bold; font-size: 10pt; margin-bottom: 2mm;">
+                            Respondent Signature
+                        </div>
+                        <div style="text-align: center; padding: 2mm;">
+                            <!-- Placeholder signature image -->
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Autograph_of_Benjamin_Franklin.svg/320px-Autograph_of_Benjamin_Franklin.svg.png"
+                                style="width: 80mm;">
+                        </div>
+                        <div style="margin-top: 2mm; font-size: 10pt;">
+                            <strong>Muatiki Abudallah</strong>
+                        </div>
+                    </td>
+                    <td style="width: 90mm; vertical-align: top; padding: 2mm; text-align: center;">
+                        <div style="font-weight: bold; font-size: 10pt; margin-bottom: 2mm;">
+                            Enumerator Signature
+                        </div>
+                        <div style="text-align: center; padding: 2mm;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Autograph_of_Benjamin_Franklin.svg/320px-Autograph_of_Benjamin_Franklin.svg.png"
+                                style="width: 80mm;">
+                        </div>
+                        <div style="margin-top: 2mm; font-size: 10pt;">
+                            <strong>EKUG1007 - Chuka Lameck</strong>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- ========== Standalone image in standard section ========== -->
+            <div class="section-title">Standard Section with Image</div>
+            <div class="question-wrapper">
+                <div class="question-label">7.5 Sample photo question</div>
+                <img src="https://picsum.photos/400/300" style="width: 60mm; margin-top: 2mm;">
+            </div>
+            <br>
+
+        </div><!-- end content-area-guide -->
+    </div><!-- end page-wrapper -->
+
+</body>
+
+</html>

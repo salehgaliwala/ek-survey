@@ -33,7 +33,25 @@ class Ek_Survey_Render
     private static function generate_form_html($survey_id, $structure)
     {
         $output = '<div class="ek-survey-container" id="ek-survey-' . esc_attr($survey_id) . '">';
-        $output .= '<h2 class="ek-survey-title">' . esc_html($structure['title']) . '</h2>';
+        if ($structure['title'] === 'Baseline Survey') {
+            $output .= '<div class="ek-survey-header-info" style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; line-height: 1.6;">';
+            $output .= '<strong>Baseline Household Survey (Pre-intervention)</strong><br>';
+            $output .= 'GS Project ID - GS12963<br>';
+            $output .= 'Full version (Carbon + SDG modules).<br>';
+            $output .= 'For Gold Standard Methodology 429 (Safe Drinking Water Supply).<br><br>';
+            $output .= '<strong>Enumerator guidance:</strong> Ask questions exactly as written. Tick one box unless it says “tick all that apply”. If the respondent does not know, tick “Don’t know / Not sure”. Record numbers only where requested. For monitoring, “before the project” refers to the situation before the borehole was installed/rehabilitated.';
+            $output .= '</div>';
+        } else {
+            // Header Text
+            $output .= '<div class="ek-survey-header-info" style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; line-height: 1.6;">';
+            $output .= '<strong>Monitoring Household Survey (Year y)</strong><br>';
+            $output .= 'GS Project ID - GS12963<br>';
+            $output .= 'Full version (Carbon + SDG modules).<br>';
+            $output .= 'For Gold Standard Methodology 429 (Safe Drinking Water Supply).<br><br>';
+            $output .= '<strong>Enumerator guidance:</strong> Ask questions exactly as written. Tick one box unless it says “tick all that apply”. If the respondent does not know, tick “Don’t know / Not sure”. Record numbers only where requested. For monitoring, “before the project” refers to the situation before the borehole was installed/rehabilitated.';
+            $output .= '</div>';
+        }
+
 
         // Progress Bar
         $sections = $structure['sections'];
@@ -49,7 +67,12 @@ class Ek_Survey_Render
 
         foreach ($sections as $index => $section) {
             $active_class = ($index === 0) ? 'active' : '';
-            $output .= '<div class="ek-survey-section ' . $active_class . '" data-step="' . ($index + 1) . '">';
+            $dep_attr = '';
+            if (!empty($section['dependency'])) {
+                $dep_attr = " data-dependency='" . esc_attr(json_encode($section['dependency'])) . "'";
+            }
+
+            $output .= '<div class="ek-survey-section ' . $active_class . '" data-step="' . ($index + 1) . '"' . $dep_attr . '>';
             $output .= '<h3 class="ek-survey-section-title">' . esc_html($section['title']) . '</h3>';
 
             foreach ($section['questions'] as $question) {
@@ -86,7 +109,12 @@ class Ek_Survey_Render
         $is_optional = stripos($label, 'optional') !== false || stripos($label, 'not mandatory') !== false;
         $required_class = $is_optional ? '' : ' ek-required';
 
-        $html = '<div class="ek-form-group field-type-' . esc_attr($type) . $required_class . '">';
+        $dep_attr = '';
+        if (isset($question['dependency'])) {
+            $dep_attr = " data-dependency='" . esc_attr(json_encode($question['dependency'])) . "'";
+        }
+
+        $html = '<div class="ek-form-group field-type-' . esc_attr($type) . $required_class . '"' . $dep_attr . '>';
         $req_span = $is_optional ? '' : ' <span class="ek-req-star" style="color:red">*</span>';
         $html .= '<label class="ek-label" for="field_' . $id . '">' . $question['id'] . ' ' . $label . $req_span . '</label>';
 
@@ -141,7 +169,7 @@ class Ek_Survey_Render
 
             case 'file':
                 $html .= '<div class="ek-file-wrapper">';
-                $html .= '<input type="file" name="files_' . $id . '" id="field_' . $id . '" class="ek-input-file" accept="image/*,.pdf" capture="environment">';
+                $html .= '<input type="file" name="files_' . $id . '" id="field_' . $id . '" class="ek-input-file" accept="image/*,.pdf">';
                 $html .= '</div>';
                 break;
 
